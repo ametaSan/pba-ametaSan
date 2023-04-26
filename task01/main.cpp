@@ -40,8 +40,8 @@ Eigen::Vector2f time_integration_implicit(const Eigen::Vector2f& p0, float dt){
   Eigen::Matrix2f A;
   Eigen::Vector2f b;
   // modify the following two lines to implement implicit time integration
-  A << 1.f, 0.f, 0.f, 1.f;
-  b << r0, v0;
+  A << (-dfdr * dt) * 1.f, 1.f, 1.f, -dt * 1.f;
+  b << v0 + 3.f * dt * f0, r0;
   return A.inverse()*b;
 }
 
@@ -82,7 +82,7 @@ int main()
   {
     pba::default_window_2d(window);
 
-    if( history_implicit.size() < 300 ) {
+    if( history_implicit.size() < 300000 ) {
       phase_explicit = time_integration_explicit(phase_explicit, dt);
       phase_explicit = reflection(phase_explicit);
 
@@ -98,13 +98,13 @@ int main()
     // below: draw routine
 
     ::glLineWidth(2.f);
-    ::glColor3d(0.0, 0.0, 1.0);
+    ::glColor3d(0.0, 0.0, 1.0); //blue
     pba::draw_circle_solid(phase_explicit.x() * std::cos(time), phase_explicit.x() * std::sin(time), 0.05f);
     draw_polyline(history_explicit);
-    ::glColor3d(1.0, 0.0, 0.0);
+    ::glColor3d(1.0, 0.0, 0.0); //red
     pba::draw_circle_solid(phase_implicit.x() * std::cos(time), phase_implicit.x() * std::sin(time), 0.05f);
     draw_polyline(history_implicit);
-    ::glColor3d(0.0, 1.0, 0.0);
+    ::glColor3d(0.0, 1.0, 0.0); //green
     pba::draw_circle_wireframe(0.f, 0.f, 0.5f);
 
     // finalize drawing by swapping buffer
