@@ -30,6 +30,8 @@ void wdw_spring_3d(
 
   // write a few lines of code below to compute the gradient of elastic energy of this spring
   // with respect to the positions of the two end points.
+  dw[0] = stiffness*(1.f-(length_ini/length))*(node2xyz[0]-node2xyz[1]);
+  dw[1] = stiffness*(1.f-(length_ini/length))*(node2xyz[1]-node2xyz[0]);
 }
 
 float gradient_descent_energy_minimization(
