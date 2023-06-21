@@ -32,7 +32,7 @@ Save the screenshot image overwriting `task08/problem1.png`
 ## Problem 2
 
 This code means to inflate the bunny's mesh twice the volume while minimizing the elastic potential energy of the mass-spring system.
- 
+
 Write a few lines of code around `line #83` and `line #147` to set constraint to the volume using the Lagrangian multiplier method. Do not write complicated or long code.  
 
 Save the screenshot image overwriting `task08/problem2.png`
@@ -41,7 +41,7 @@ Save the screenshot image overwriting `task08/problem2.png`
 
 Write down the elastic potential energy of spring shown in the standard output after the convergence below: 
 
-***elastic potential energy == ?????***
+***elastic potential energy == 0.298599***
 
 ## After Doing the Assignment
 

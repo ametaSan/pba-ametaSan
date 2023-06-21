@@ -85,9 +85,9 @@ void wdw_volume_tri_origin(
   w = 1./6.*node2xyz[0].dot(node2xyz[1].cross(node2xyz[2]));
   // ------------------------------
   // Write some code below to compute differentiation. Keep it simple and understandable
-  // dw[0] =
-  // dw[1] =
-  // dw[2] =
+  dw[0] = (1.f/6.f)*(node2xyz[1].cross(node2xyz[2]));
+  dw[1] = (1.f/6.f)*(node2xyz[2].cross(node2xyz[0]));
+  dw[2] = (1.f/6.f)*(node2xyz[0].cross(node2xyz[1]));
 }
 
 void inflate(
@@ -110,7 +110,7 @@ void inflate(
         line2vtx(i_line, 0),
         line2vtx(i_line, 1)};
     float length_ini = (vtx2xyz_ini.row(node2vtx[0]) - vtx2xyz_ini.row(node2vtx[1])).norm();
-    const Eigen::Vector3d node2xyz[3] = {  // xyz-coordinates of two nodes
+    const Eigen::Vector3d node2xyz[3] = {  // xyz-coordinates of two nodes, why size 3 set?
         vtx2xyz.row(node2vtx[0]).cast<double>(),
         vtx2xyz.row(node2vtx[1]).cast<double>()};
     double w = 0;
@@ -141,7 +141,7 @@ void inflate(
         vtx2xyz.row(node2vtx[0]).cast<double>(),
         vtx2xyz.row(node2vtx[1]).cast<double>(),
         vtx2xyz.row(node2vtx[2]).cast<double>()};
-    double w = 0.0;
+    double w = 0.0; // w here is not energy
     Eigen::Vector3d dw[3];
     wdw_volume_tri_origin(
         w, dw,
@@ -149,14 +149,21 @@ void inflate(
     volume += w;
     // -------------------------
     // write some code below to set values in the linear system to set constraint to specify volume
-    // write some code including 'w'
+    // write some code including 'w' <- ?
+    // By me: no need to fill code here
+    
     for (unsigned int inode = 0; inode < 3; ++inode) {
       for (unsigned int idim = 0; idim < 3; ++idim) {
         // write some code including `dw` and `lambda`
+        dW(node2vtx[inode] * 3 + idim) -= lambda * dw[inode](idim);
+        ddW(node2vtx[inode] * 3 + idim, num_vtx * 3) -= dw[inode](idim);
+        ddW(num_vtx * 3, node2vtx[inode] * 3 + idim) -= dw[inode](idim);
       }
     }
   }
-  // Do not forget to write one line of code here
+  // Do not forget to write one line of code here      
+  dW(num_vtx * 3) -= volume - volume_trg;
+
   // -------------------------------------------------
   // Do not change below
   // damping for stable convergence
@@ -166,7 +173,7 @@ void inflate(
   std::cout << "   elastic_energy (write down in the README.md): " << elastic_energy << std::endl;
   std::cout << "   current volume: " << volume << "  target volume: " << volume_trg << std::endl;
   std::cout << "   residual (make sure this number get smaller in each iteration): " << dW.squaredNorm() << std::endl;
-  // solve linear system
+  // solve linear system (Newton-Raphson)
   Eigen::VectorXd upd = ddW.inverse() * dW;
   // update solution
   for (unsigned int i_vtx = 0; i_vtx < num_vtx; ++i_vtx) {
