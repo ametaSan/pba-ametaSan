@@ -35,7 +35,7 @@ This code means to hang bunny's mesh by fixing the position of one vertex under 
 
 The hanged bunny can be simulated by energy minimization w.r.t. the rigid translation and rotation. 
 The energy is the sum of the gravitational potential energy and the penalty energy to fix one vertex.    
- 
+
 We minimize the energy using gradient descent method. 
 Write a few lines of code around `line #74` to compute gradient of energy w.r.t translation and rotation. 
 Write one line of code for translation and rotation respectively.
@@ -46,7 +46,7 @@ Save the screenshot image overwriting `task09/problem2.png`
 
 Run the program for a while to let the minimization converge. Write down the converged energy shown in standard output below. 
 
-***energy: == ?????***
+***energy: == -5415.64***
 
 ## After Doing the Assignment
 
